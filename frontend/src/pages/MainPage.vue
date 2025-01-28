@@ -71,8 +71,8 @@ const removeAllNotes = () => {
 </script>
 
 <template>
-  <main class="mx-auto max-w-md rounded-3xl px-5 pt-3 pb-5">
-    <p class="font-medium text-xl cursor-pointer w-fit" @click="userName = ''">
+  <main class="mx-auto w-80 rounded-3xl px-5 pt-3 pb-5 overflow-hidden text-[16px]">
+    <p class="font-medium text-md cursor-pointer w-fit" @click="userName = ''">
       Hello, {{ userName
       }}<Input
         v-if="userName === ''"
@@ -82,18 +82,19 @@ const removeAllNotes = () => {
         class="p-1 h-6 w-24 inline rounded-lg"
       />!
     </p>
-    <h1 class="text-5xl font-black mt-2">Quick Notes</h1>
+    <h1 class="text-4xl font-black">Quick Notes</h1>
     <Textarea
-      class="mt-5 rounded-3xl border-2 text-md resize-none h-[150px]"
+      class="mt-3 rounded-3xl border-2 resize-none h-28 text-[16px]"
       placeholder="Enter your note right here!"
       v-model="noteText"
     />
     <Button
-      class="bg-black w-full mt-2 text-md text-white font-medium rounded-3xl py-5 cursor-pointer"
+      class="bg-black w-full mt-2 text-white font-medium rounded-3xl py-5 cursor-pointer text-[16px]"
       @click="addNote"
+      @keyup.enter="addNote"
       >Create</Button
     >
-    <ScrollArea class="mt-3 h-[350px] w-full rounded-3xl outline-none">
+    <ScrollArea class="mt-3 h-[296px] w-full rounded-3xl outline-none">
       <transition-group name="fade" tag="ul" class="space-y-3">
         <li
           v-for="note in notes"
