@@ -10,23 +10,23 @@ const notes = ref(JSON.parse(localStorage.getItem('notes')) || [])
 const userName = ref(localStorage.getItem('userName') || '')
 const newUserName = ref('')
 const colors = [
-  'red',
-  'orange',
-  'amber',
-  'yellow',
-  'lime',
-  'green',
-  'emerald',
-  'teal',
-  'cyan',
-  'sky',
-  'blue',
-  'indigo',
-  'violet',
-  'purple',
-  'fuchsia',
-  'pink',
-  'rose',
+  'bg-red-800',
+  'bg-orange-800',
+  'bg-amber-800',
+  'bg-yellow-800',
+  'bg-lime-800',
+  'bg-green-800',
+  'bg-emerald-800',
+  'bg-teal-800',
+  'bg-cyan-800',
+  'bg-sky-800',
+  'bg-blue-800',
+  'bg-indigo-800',
+  'bg-violet-800',
+  'bg-purple-800',
+  'bg-fuchsia-800',
+  'bg-pink-800',
+  'bg-rose-800',
 ]
 
 const addNote = () => {
@@ -45,19 +45,19 @@ const addNote = () => {
     text: noteText.value,
     id: dateNow,
     date: `${hours}:${minutes} ${day}.${month}.${year}`,
-    color: `bg-${colors[Math.floor(Math.random() * colors.length)]}-900`,
+    color: colors[Math.floor(Math.random() * colors.length)],
   }
-  console.log(newNote)
+
   notes.value.push(newNote)
   localStorage.setItem('notes', JSON.stringify(notes.value))
 
   noteText.value = ''
 }
 
-// const removeNote = (noteId) => {
-//   notes.value = notes.value.filter((note) => note.id !== noteId)
-//   localStorage.setItem('notes', JSON.stringify(notes.value))
-// }
+const removeNote = (noteId) => {
+  notes.value = notes.value.filter((note) => note.id !== noteId)
+  localStorage.setItem('notes', JSON.stringify(notes.value))
+}
 
 const saveUserName = () => {
   userName.value = newUserName.value
@@ -68,14 +68,10 @@ const removeAllNotes = () => {
   notes.value = []
   localStorage.removeItem('notes')
 }
-
-const colorr = 'red'
 </script>
 
 <template>
-  <main
-    class="mx-auto max-w-md border-2 border-gray-500 rounded-3xl mt-10 px-5 pt-3 pb-5 shadow-2xl"
-  >
+  <main class="mx-auto max-w-md rounded-3xl px-5 pt-3 pb-5">
     <p class="font-medium text-xl cursor-pointer w-fit" @click="userName = ''">
       Hello, {{ userName
       }}<Input
@@ -83,44 +79,71 @@ const colorr = 'red'
         placeholder="Enter name"
         v-model="newUserName"
         @keyup.enter="saveUserName"
-        class="p-1 h-6 w-24 inline"
+        class="p-1 h-6 w-24 inline rounded-lg"
       />!
     </p>
-    <h1 class="text-5xl font-black">Quick Notes</h1>
-    <Textarea class="mt-3 rounded-3xl text-md resize-none h-[150px]" v-model="noteText" />
+    <h1 class="text-5xl font-black mt-2">Quick Notes</h1>
+    <Textarea
+      class="mt-5 rounded-3xl border-2 text-md resize-none h-[150px]"
+      placeholder="Enter your note right here!"
+      v-model="noteText"
+    />
     <Button
-      class="bg-black w-full mt-2 text-md text-white font-medium rounded-3xl py-5"
+      class="bg-black w-full mt-2 text-md text-white font-medium rounded-3xl py-5 cursor-pointer"
       @click="addNote"
       >Create</Button
     >
-    <ScrollArea class="mt-3 h-[350px] w-full rounded-3xl">
-      <ul>
+    <ScrollArea class="mt-3 h-[350px] w-full rounded-3xl outline-none">
+      <transition-group name="fade" tag="ul" class="space-y-3">
         <li
           v-for="note in notes"
           :key="note.id"
           class="w-full min-h-36 flex flex-col justify-between gap-5 p-4 text-white rounded-3xl mb-2 last:mb-0"
-          :class="`bg-${colorr}-900`"
+          :class="note.color"
         >
           <p class="w-full break-words font-medium">{{ note.text }}</p>
           <div class="flex justify-between">
-            <p class="opacity-30 hover:opacity-100 transition-all">{{ note.date }}</p>
-            <p class="hover:underline cursor-pointer opacity-30 hover:opacity-100 transition-all">
+            <p class="opacity-30 transition-all">{{ note.date }}</p>
+            <p
+              class="cursor-pointer opacity-30 hover:opacity-100 transition-all"
+              @click="removeNote(note.id)"
+            >
               Delete
             </p>
           </div>
         </li>
-      </ul>
+      </transition-group>
       <p
-        class="text-center text-red-600 my-4 cursor-pointer hover:underline"
+        v-if="notes.length > 0"
+        class="text-center text-red-600 opacity-30 my-4 cursor-pointer hover:opacity-100 transition-all"
         @click="removeAllNotes()"
       >
         Delete all notes
       </p>
+      <p v-else class="text-center opacity-30 mt-5">You haven't added any notes yet!</p>
     </ScrollArea>
   </main>
 </template>
 
-<style scoped></style>
-
-<!--{{ note.text }} | {{ note.id }} | {{ note.date }} |-->
-<!--<span @click="removeNote(note.id)">Delete</span>-->
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s ease;
+}
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(-50px);
+}
+.fade-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fade-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(0);
+}
+</style>
